@@ -1,1 +1,48 @@
+pipeline {
+  agent any
+
+  environment {
+    AWS_REGION = 'us-east-1'
+    ECR_REGISTRY = '<AWS_ACCOUNT_ID>.dkr.ecr.${AWS_REGION}.amazonaws.com'
+    IMAGE_NAME = 'node-app'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps { git 'https://github.com/<your‑user>/<your‑repo>.git' }
+    }
+
+    stage('Build & Push to ECR') {
+      steps {
+        script {
+          docker.withRegistry("https://${ECR_REGISTRY}", 'aws‑ecr‑creds') {
+            def img = docker.build("${IMAGE_NAME}:${env.BUILD_NUMBER}", 'app')
+            img.push('latest')
+          }
+        }
+      }
+    }
+
+    stage('Deploy to EKS') {
+      steps {
+        withCredentials([file(credentialsId: 'eks‑kubeconfig', variable: 'KUBECONFIG')]) {
+          sh '''
+            kubectl apply -f k8s/namespace.yaml
+            kubectl apply -f k8s/deployment.yaml
+            kubectl apply -f k8s/service.yaml
+          '''
+        }
+      }
+    }
+  }
+
+  post {
+    success {
+      echo '✅ Deployment completed!'
+    }
+    failure {
+      echo '❌ Pipeline failed.'
+    }
+  }
+}
 
