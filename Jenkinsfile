@@ -21,7 +21,8 @@ pipeline {
       steps {
         sh '''
           echo "Building Docker image..."
-          sh 'docker build -t nodejs-app:v1 ./app'
+          sh '''docker build -t nodejs-app:v1 ./app'''
+
 
         '''
       }
