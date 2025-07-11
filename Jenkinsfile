@@ -18,15 +18,14 @@ pipeline {
 
 
     stage('Build Docker Image') {
-      steps {
-        sh '''
-          echo "Building Docker image..."
-          sh '''docker build -t nodejs-app:v1 ./app'''
+  steps {
+    echo 'Building Docker image…'
+    sh '''
+      docker build -t nodejs-app:v1 ./app
+    '''
+  }
+}
 
-
-        '''
-      }
-    }
 
     stage('Login to ECR') {
       steps {
