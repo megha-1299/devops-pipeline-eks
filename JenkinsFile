@@ -46,3 +46,8 @@ pipeline {
   }
 }
 
+withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+    sh 'kubectl get nodes'
+}
+
+
