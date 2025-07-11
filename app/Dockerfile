@@ -2,7 +2,7 @@
 FROM node:18-alpine AS build
 WORKDIR /src
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 # -------- Runtime stage --------
 FROM node:18-alpine
