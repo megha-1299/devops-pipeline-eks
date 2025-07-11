@@ -11,10 +11,11 @@ pipeline {
   stages {
 
     stage('Checkout Code') {
-      steps {
-        git url: 'https://github.com/megha-1299/devops-pipeline-eks.git'
-      }
-    }
+  steps {
+    checkout scm
+  }
+}
+
 
     stage('Build Docker Image') {
       steps {
